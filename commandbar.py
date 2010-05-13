@@ -1,14 +1,16 @@
-import locale
+import curses
 
 from textbox import TextBox
 
 class CommandBar(TextBox):
     def __init__(self, parent):
         super(CommandBar, self).__init__(parent, -1)
+        self.style = 'command'
 
     def read(self):
         self.set_text(':')
         cmd = ''
+        curses.curs_set(2)
         while True:
             c = self.get_char()
 
@@ -20,6 +22,7 @@ class CommandBar(TextBox):
         
             if c == '<KEY_ENTER>' or c == '\n':
                 self.set_text('')
+                curses.curs_set(0)
                 return cmd
             elif c == '<KEY_LEFT>':
                 (y, x) = self.win.getyx()

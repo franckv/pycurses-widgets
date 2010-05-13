@@ -2,12 +2,14 @@ import sys
 import curses
 
 import log
+import config
 from base import BaseWidget
 from statusbar import StatusBar
 from commandbar import CommandBar
 from titlebar import TitleBar
 from panel import Panel
 from textpanel import TextPanel
+from itemlist import ItemList
 
 class Screen(BaseWidget):
     def __init__(self, win):
@@ -18,7 +20,7 @@ class Screen(BaseWidget):
 
         self.status = StatusBar(self)
         self.title = TitleBar(self)
-        self.main = TextPanel(self)
+        self.main = ItemList(self)
         self.command = CommandBar(self)
 
         self.set_colors()
@@ -30,17 +32,22 @@ class Screen(BaseWidget):
         self.handler = handler
 
     def set_colors(self):
-        self.colors = {
-            'default': (0, 'COLOR_WHITE', 'COLOR_BLACK'),
-            'title': (1, 'COLOR_YELLOW', 'COLOR_BLUE'),
-            'status': (1, 'COLOR_YELLOW', 'COLOR_BLUE'),
-            'error': (2, 'COLOR_RED', 'COLOR_BLACK'),
-            'highlight': (3, 'COLOR_YELLOW', 'COLOR_BLACK'),
-        }
-
-        for color in self.colors.itervalues():
+        for color in config.colors.itervalues():
             if color[0] == 0: continue
-            curses.init_pair(color[0], getattr(curses, color[1]), getattr(curses, color[2]))
+            curses.init_pair(
+                color[0],
+                getattr(curses, 'COLOR_' + color[1]),
+                getattr(curses, 'COLOR_' + color[2])
+            )
+
+    def get_colors(self):
+        return self.colors
+
+    def get_color(self, type):
+        if not type in config.colors:
+            type = 'default'
+        return curses.color_pair(
+                config.colors[type][0]) | getattr(curses, 'A_' + config.colors[type][3])
 
     def set_status(self, text):
         self.status.set_text(text)

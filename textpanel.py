@@ -1,3 +1,6 @@
+import curses
+
+import log
 from panel import Panel
 
 class TextPanel(Panel):
@@ -7,6 +10,10 @@ class TextPanel(Panel):
 
     def add_line(self, line):
         self.lines.append(line)
+        self.updated = True
+
+    def clear_lines(self):
+        self.lines = []
         self.updated = True
 
     def refresh(self):
@@ -19,11 +26,14 @@ class TextPanel(Panel):
             else:
                 start = len(self.lines) - y
 
+            count = 0
             for line in self.lines[start:]:
                 if first:
                     first = False
                 else:
-                    self.write('\n')
+                    self.move(count, 0)
+
                 self.write(line)
+                count += 1
 
         super(TextPanel, self).refresh()
