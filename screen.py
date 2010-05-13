@@ -7,6 +7,7 @@ from statusbar import StatusBar
 from commandbar import CommandBar
 from titlebar import TitleBar
 from panel import Panel
+from textpanel import TextPanel
 
 class Screen(BaseWidget):
     def __init__(self, win):
@@ -17,7 +18,7 @@ class Screen(BaseWidget):
 
         self.status = StatusBar(self)
         self.title = TitleBar(self)
-        self.main = Panel(self)
+        self.main = TextPanel(self)
         self.command = CommandBar(self)
 
         self.set_colors()

@@ -26,6 +26,7 @@ class BaseWidget(object):
         log.debug('%s.redraw' % self.__class__.__name__)
 
         (maxy, maxx, posy, posx) = self.get_dimensions()
+        log.debug((maxy, maxx, posy, posx))
         self.win.resize(maxy, maxx)
         self.win.mvwin(posy, posx)
         for child in self.childs: child.redraw()
@@ -53,13 +54,12 @@ class BaseWidget(object):
         return self.win.getmaxyx()
 
     def move(self, y, x):
-        log.debug('move %i, %i' % (y, x))
+        log.debug('%s.move %i, %i' % (self.__class__.__name__, y, x))
         self.win.move(y, x)
  
     def write(self, s, attr = None):
         log.debug('%s.write %s', self.__class__.__name__, s)
         if attr is None: attr = curses.A_NORMAL
-        (y, x) = self.win.getyx()
         self.win.addstr(s.encode(self.parent.encoding), attr)
         self.updated = True
 
