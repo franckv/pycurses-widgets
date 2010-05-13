@@ -1,4 +1,8 @@
+import locale
+
 from base import BaseWidget
+
+locale.setlocale(locale.LC_ALL, '')
 
 class TextBox(BaseWidget):
     def __init__(self, parent, relpos):
@@ -37,13 +41,15 @@ class TextBox(BaseWidget):
         super(TextBox, self).redraw(maxy, maxx, posy, posx)
 
     def refresh(self):
-        self.win.clear()
-        self.write(self.text)
+        if self.updated:
+            self.win.clear()
+            self.write(self.text)
 
-        super(TextBox, self).refresh()
+            super(TextBox, self).refresh()
 
     def set_text(self, text):
         self.text = text
+        self.updated = True
 
     def pad_string(self, s):
         (maxy, maxx) = self.win.getmaxyx()
@@ -55,6 +61,11 @@ class TextBox(BaseWidget):
             return curses.color_pair(self.colors[type][0])
         else:
             return curses.color_pair(0)
+
+    def clear(self):
+        self.text = ''
+        self.updated = True
+        super(TextBox, self).clear()
 
     #def set_title(self, s):
     #    self.title = s
