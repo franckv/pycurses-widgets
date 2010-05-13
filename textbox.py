@@ -51,11 +51,6 @@ class TextBox(BaseWidget):
         else:
             return curses.color_pair(0)
 
-    def clear(self):
-        self.text = ''
-        self.updated = True
-        super(TextBox, self).clear()
-
     #def set_title(self, s):
     #    self.title = s
     #    self.win['title'].move(0, 0)

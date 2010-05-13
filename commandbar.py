@@ -19,7 +19,7 @@ class CommandBar(TextBox):
             self.screen.set_status('(%i, %i) : <%s>' % (y, x, c.strip()))
         
             if c == '<KEY_ENTER>' or c == '\n':
-                self.clear()
+                self.set_text('')
                 return cmd
             elif c == '<KEY_LEFT>':
                 (y, x) = self.win.getyx()

@@ -12,6 +12,7 @@ class Panel(BaseWidget):
 
     def refresh(self):
         if self.updated:
-            self.fill('#')
+            pass
+            #self.fill('#')
 
         super(Panel, self).refresh()

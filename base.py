@@ -96,7 +96,3 @@ class BaseWidget(object):
 
         self.updated = True
 
-    def clear(self):
-        self.win.clear()
-        self.updated = True
-
