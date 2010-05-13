@@ -15,8 +15,8 @@ class BaseWidget(object):
         self.screen = parent.screen
         self.parent.add_child(self)
         self.childs = []
-        #self.win = curses.newwin(maxy, maxx, posy, posx)
-        self.win = self.screen.win.subwin(maxy, maxx, posy, posx)
+        self.win = curses.newwin(maxy, maxx, posy, posx)
+        #self.win = self.screen.win.subwin(maxy, maxx, posy, posx)
         self.win.keypad(1)
         self.updated = True
 
@@ -36,7 +36,7 @@ class BaseWidget(object):
         log.debug('%s.refresh' % self.__class__.__name__)
         if self.updated:
             log.debug('updated')
-            self.win.refresh()
+            self.win.noutrefresh()
             self.updated = False
         for child in self.childs: child.refresh()
       

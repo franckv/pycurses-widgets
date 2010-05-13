@@ -55,8 +55,7 @@ class Screen(BaseWidget):
         for child in self.childs:
             log.debug('child %s' % child.__class__.__name__)
             child.refresh()
-        #self.win.refresh()
-        #curses.doupdate()
+        curses.doupdate()
 
     def destroy(self):
         for child in self.childs: child.destroy()

@@ -1,5 +1,6 @@
 import locale
 
+import log
 from base import BaseWidget
 
 locale.setlocale(locale.LC_ALL, '')
@@ -41,8 +42,9 @@ class TextBox(BaseWidget):
         super(TextBox, self).redraw(maxy, maxx, posy, posx)
 
     def refresh(self):
+        log.debug('refresh %s' % self.__class__.__name__)
         if self.updated:
-            self.win.clear()
+            self.win.erase()
             self.write(self.text)
 
             super(TextBox, self).refresh()
