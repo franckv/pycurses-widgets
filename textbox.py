@@ -8,24 +8,19 @@ locale.setlocale(locale.LC_ALL, '')
 class TextBox(BaseWidget):
     def __init__(self, parent, relpos):
         self.relpos = relpos
-
-        (p_maxy, p_maxx) = parent.win.getmaxyx()
-        (p_posy, p_posx) = parent.win.getyx()
-
-        if relpos >= 0:
-            posy = p_posy + relpos
-        else:
-            posy = p_posy + p_maxy + relpos
-
-        posx = p_posx
-
-        maxy = 1
-        maxx = p_maxx
-
-        super(TextBox, self).__init__(parent, maxy, maxx, posy, posx)
         self.text = ''
 
-    def redraw(self):
+        super(TextBox, self).__init__(parent)
+
+    def refresh(self):
+        log.debug('refresh %s' % self.__class__.__name__)
+        if self.updated:
+            self.win.erase()
+            self.write(self.text)
+
+        super(TextBox, self).refresh()
+
+    def get_dimensions(self):
         (p_maxy, p_maxx) = self.parent.win.getmaxyx()
         (p_posy, p_posx) = self.parent.win.getyx()
 
@@ -39,15 +34,7 @@ class TextBox(BaseWidget):
         maxy = 1
         maxx = p_maxx
 
-        super(TextBox, self).redraw(maxy, maxx, posy, posx)
-
-    def refresh(self):
-        log.debug('refresh %s' % self.__class__.__name__)
-        if self.updated:
-            self.win.erase()
-            self.write(self.text)
-
-            super(TextBox, self).refresh()
+        return (maxy, maxx, posy, posx)
 
     def set_text(self, text):
         self.text = text

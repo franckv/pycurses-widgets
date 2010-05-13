@@ -9,28 +9,27 @@ import log
 locale.setlocale(locale.LC_ALL, '')
 
 class BaseWidget(object):
-    def __init__(self, parent, maxy, maxx, posy, posx):
+    def __init__(self, parent):
         log.debug('%s.init' % self.__class__.__name__)
+
         self.parent = parent
         self.screen = parent.screen
         self.parent.add_child(self)
         self.childs = []
+        (maxy, maxx, posy, posx) = self.get_dimensions()
         self.win = curses.newwin(maxy, maxx, posy, posx)
         #self.win = self.screen.win.subwin(maxy, maxx, posy, posx)
         self.win.keypad(1)
         self.updated = True
 
-    def redraw(self, maxy, maxx, posy, posx):
+    def redraw(self):
         log.debug('%s.redraw' % self.__class__.__name__)
+
+        (maxy, maxx, posy, posx) = self.get_dimensions()
         self.win.resize(maxy, maxx)
         self.win.mvwin(posy, posx)
         for child in self.childs: child.redraw()
         self.updated = True
-
-    def resize(self):
-        log.debug('%s.resize' % self.__class__.__name__)
-        self.redraw()
-        self.refresh()
 
     def refresh(self):
         log.debug('%s.refresh' % self.__class__.__name__)
