@@ -1,6 +1,7 @@
 import sys
 import curses
 
+import log
 from base import BaseWidget
 from statusbar import StatusBar
 from commandbar import CommandBar
@@ -42,13 +43,18 @@ class Screen(BaseWidget):
 
     def set_status(self, text):
         self.status.set_text(text)
-        self.refresh()
+
+    def set_title(self, text):
+        self.title.set_text(text)
 
     def redraw(self):
         for child in self.childs: child.redraw()
 
     def refresh(self):
-        for child in self.childs: child.refresh()
+        log.debug('refresh')
+        for child in self.childs:
+            log.debug('child %s' % child.__class__.__name__)
+            child.refresh()
         #self.win.refresh()
         #curses.doupdate()
 
@@ -61,3 +67,4 @@ class Screen(BaseWidget):
 
     def read_command(self):
         return self.command.read()
+

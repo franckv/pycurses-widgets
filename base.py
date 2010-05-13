@@ -4,38 +4,44 @@ import curses
 import locale
 
 import common
+import log
 
 locale.setlocale(locale.LC_ALL, '')
 
 class BaseWidget(object):
     def __init__(self, parent, maxy, maxx, posy, posx):
+        log.debug('%s.init' % self.__class__.__name__)
         self.parent = parent
         self.screen = parent.screen
         self.parent.add_child(self)
         self.childs = []
-        self.win = curses.newwin(maxy, maxx, posy, posx)
+        #self.win = curses.newwin(maxy, maxx, posy, posx)
+        self.win = self.screen.win.subwin(maxy, maxx, posy, posx)
         self.win.keypad(1)
         self.updated = True
 
     def redraw(self, maxy, maxx, posy, posx):
-        #if self.win: del self.win
-        #self.win = curses.newwin(maxy, maxx, posy, posx)
+        log.debug('%s.redraw' % self.__class__.__name__)
         self.win.resize(maxy, maxx)
         self.win.mvwin(posy, posx)
         for child in self.childs: child.redraw()
         self.updated = True
 
     def resize(self):
+        log.debug('%s.resize' % self.__class__.__name__)
         self.redraw()
         self.refresh()
 
     def refresh(self):
+        log.debug('%s.refresh' % self.__class__.__name__)
         if self.updated:
+            log.debug('updated')
             self.win.refresh()
             self.updated = False
         for child in self.childs: child.refresh()
       
     def destroy(self):
+        log.debug('%sdestroy' % self.__class__.__name__)
         if self.win: del self.win
 
     def add_child(self, child):
@@ -48,21 +54,25 @@ class BaseWidget(object):
         return self.win.getmaxyx()
 
     def move(self, y, x):
+        log.debug('move %i, %i' % (y, x))
         self.win.move(y, x)
  
     def write(self, s, attr = None):
+        log.debug('%s.write %s', self.__class__.__name__, s)
         if attr is None: attr = curses.A_NORMAL
         (y, x) = self.win.getyx()
         self.win.addstr(s.encode(self.parent.encoding), attr)
         self.updated = True
 
     def get_char(self):
+        log.debug('%s.get_char' % self.__class__.__name__)
         result = ''
         count = 0
 
         self.screen.refresh()
         while True:
             ch = self.win.getch()
+            log.debug('ch=%i' % ch)
             if ch == -1:
                 return None
             if ch > 255:
