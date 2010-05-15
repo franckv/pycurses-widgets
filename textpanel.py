@@ -16,6 +16,11 @@ class TextPanel(Panel):
         self.lines = []
         self.updated = True
 
+    def del_line(self, n):
+        if n >= len(self.lines):
+            return
+        del self.lines[n]
+
     def refresh(self):
         if self.updated:
             self.win.erase()

@@ -79,7 +79,7 @@ class BaseWidget(object):
     def write(self, s, attr = None):
         log.debug('%s.write %s', self.__class__.__name__, s)
         if attr is None: attr = curses.A_NORMAL
-        self.win.addstr(s.encode(self.parent.encoding), attr)
+        self.win.addstr(s.encode(self.screen.encoding), attr)
         self.updated = True
 
     def get_char(self):
@@ -100,7 +100,7 @@ class BaseWidget(object):
                 return '<%i>' % ch
             result += chr(ch)
             try:
-                decoded = result.decode(self.parent.encoding)
+                decoded = result.decode(self.screen.encoding)
                 # map control characters
                 if len(decoded) == 1 and ord(decoded) in chars.mappings:
                     return chars.mappings[ord(decoded)]

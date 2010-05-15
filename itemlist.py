@@ -8,6 +8,7 @@ class ItemList(TextPanel):
     def __init__(self, parent):
         super(ItemList, self).__init__(parent)
         self.selected = None
+        self.on_selected = None
         self.register_event('<KEY_UP>', self.move_up)
         self.register_event('<KEY_DOWN>', self.move_down)
         self.register_event('<KEY_ENTER>', self.item_selected)
@@ -39,9 +40,14 @@ class ItemList(TextPanel):
 
         log.debug('selected is %i' % self.selected)
 
+    def set_selected(self, cb):
+        self.on_selected = cb
+
     def item_selected(self):
         if not self.selected is None:
             log.debug('enter pressed on item %i' % self.selected)
+            if self.on_selected:
+                self.on_selected(self.selected)
 
     def refresh(self):
         if self.updated:

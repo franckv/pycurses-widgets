@@ -16,12 +16,7 @@ class Screen(BaseWidget):
         # TODO: make it generic
         self.set_colors()
 
-    def send_event(self, event):
-        log.debug('received event %s' % event)
-        if not event in self.events:
-            self.main.send_event(event)
-        else:
-            self.events[event]()
+        self.register_event('<KEY_RESIZE>', self.redraw)
 
     def set_colors(self):
         curses.use_default_colors()

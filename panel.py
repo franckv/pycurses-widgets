@@ -5,7 +5,8 @@ class Panel(BaseWidget):
         super(Panel, self).__init__(parent)
 
     def get_dimensions(self):
-        (p_maxy, p_maxx) = self.parent.get_size()
-        (p_begy, p_begx) = self.parent.get_beg()
+        (p_maxy, p_maxx) = self.screen.get_size()
+        (p_begy, p_begx) = self.screen.get_beg()
 
+        # TODO : hardcoded
         return (p_maxy - 3, p_maxx, p_begy + 1, p_begx)
