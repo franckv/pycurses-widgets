@@ -12,7 +12,6 @@ class TextBox(BaseWidget):
         self.style = 'default'
         self.fill = False
         self.text = ''
-
         super(TextBox, self).__init__(parent)
 
     def refresh(self):

@@ -8,7 +8,7 @@ class CommandBar(TextBox):
         super(CommandBar, self).__init__(parent, -1)
         self.style = 'command'
 
-    def read(self, prompt):
+    def read(self, prompt, validator = None):
         self.set_text(prompt)
         cmd = ''
         curses.curs_set(2)
@@ -18,10 +18,11 @@ class CommandBar(TextBox):
             if c is None:
                 continue
 
-            (y, x) = self.get_pos()
-            (maxy, maxx) = self.get_size()
-            self.screen.set_status('(%i, %i) : <%s>' % (y, x, c.strip()))
+            if validator and not validator(c):
+                continue
         
+            (y, x) = self.get_pos()
+
             if c == '<KEY_ENTER>' or c == '\n':
                 self.set_text('')
                 curses.curs_set(0)
@@ -40,7 +41,7 @@ class CommandBar(TextBox):
             elif c == '<KEY_RESIZE>':
                 self.screen.send_event(c)
             else:
-                (maxy, maxx) = self.win.getmaxyx()
+                (maxy, maxx) = self.get_size()
                 # should be screen size
                 if len(cmd) > maxx - 3:
                     self.move(y, x)
