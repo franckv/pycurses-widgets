@@ -5,6 +5,7 @@ import locale
 
 import common
 import log
+from ui.ncurses import chars
 
 locale.setlocale(locale.LC_ALL, '')
 
@@ -21,6 +22,7 @@ class BaseWidget(object):
         #self.win = self.screen.win.subwin(maxy, maxx, posy, posx)
         self.win.keypad(1)
         self.updated = True
+        self.events = {}
 
     def redraw(self):
         log.debug('%s.redraw' % self.__class__.__name__)
@@ -44,11 +46,21 @@ class BaseWidget(object):
         log.debug('%sdestroy' % self.__class__.__name__)
         if self.win: del self.win
 
+    def register_event(self, event, method):
+        self.events[event] = method
+
+    def send_event(self, event):
+        if event in self.events:
+            self.events[event]()
+
     def add_child(self, child):
         self.childs.append(child)
 
     def get_pos(self):
         return self.win.getyx()
+
+    def get_beg(self):
+        return self.win.getbegyx()
 
     def get_size(self):
         return self.win.getmaxyx()
@@ -81,7 +93,12 @@ class BaseWidget(object):
                 return '<%i>' % ch
             result += chr(ch)
             try:
-                return result.decode(self.parent.encoding)
+                decoded = result.decode(self.parent.encoding)
+                # map control characters
+                if len(decoded) == 1 and ord(decoded) in chars.mappings:
+                    return chars.mappings[ord(decoded)]
+                else:
+                    return decoded
             except UnicodeDecodeError as e:
                 count += 1
                 # assumes multibytes characters are less that 4 bytes

@@ -1,15 +1,12 @@
 import sys
 import curses
+import locale
 
 import log
 import config
 from base import BaseWidget
-from statusbar import StatusBar
-from commandbar import CommandBar
-from titlebar import TitleBar
-from panel import Panel
-from textpanel import TextPanel
-from itemlist import ItemList
+
+locale.setlocale(locale.LC_ALL, '')
 
 class Screen(BaseWidget):
     def __init__(self, win):
@@ -17,21 +14,21 @@ class Screen(BaseWidget):
         self.parent = None
         self.screen = self
         self.childs = []
+        self.events = {}
+        self.encoding = locale.getpreferredencoding()
 
-        self.status = StatusBar(self)
-        self.title = TitleBar(self)
-        self.main = ItemList(self)
-        self.command = CommandBar(self)
-
+        # TODO: make it generic
         self.set_colors()
 
-    def set_encoding(self, encoding):
-        self.encoding = encoding
-
-    def set_handler(self, handler):
-        self.handler = handler
+    def send_event(self, event):
+        log.debug('received event %s' % event)
+        if not event in self.events:
+            self.main.send_event(event)
+        else:
+            self.events[event]()
 
     def set_colors(self):
+        curses.use_default_colors()
         for color in config.colors.itervalues():
             if color[0] == 0: continue
             curses.init_pair(
@@ -49,13 +46,8 @@ class Screen(BaseWidget):
         return curses.color_pair(
                 config.colors[type][0]) | getattr(curses, 'A_' + config.colors[type][3])
 
-    def set_status(self, text):
-        self.status.set_text(text)
-
-    def set_title(self, text):
-        self.title.set_text(text)
-
     def redraw(self):
+        log.debug('redraw')
         for child in self.childs: child.redraw()
 
     def refresh(self):
@@ -68,10 +60,3 @@ class Screen(BaseWidget):
     def destroy(self):
         for child in self.childs: child.destroy()
         sys.exit(0)
-
-    def get_char(self):
-        return self.command.get_char()
-
-    def read_command(self):
-        return self.command.read()
-

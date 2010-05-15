@@ -1,5 +1,6 @@
 import curses
 
+import log
 from textbox import TextBox
 
 class CommandBar(TextBox):
@@ -7,8 +8,8 @@ class CommandBar(TextBox):
         super(CommandBar, self).__init__(parent, -1)
         self.style = 'command'
 
-    def read(self):
-        self.set_text(':')
+    def read(self, prompt):
+        self.set_text(prompt)
         cmd = ''
         curses.curs_set(2)
         while True:
@@ -18,6 +19,7 @@ class CommandBar(TextBox):
                 continue
 
             (y, x) = self.get_pos()
+            (maxy, maxx) = self.get_size()
             self.screen.set_status('(%i, %i) : <%s>' % (y, x, c.strip()))
         
             if c == '<KEY_ENTER>' or c == '\n':
@@ -25,16 +27,24 @@ class CommandBar(TextBox):
                 curses.curs_set(0)
                 return cmd
             elif c == '<KEY_LEFT>':
-                (y, x) = self.win.getyx()
-                self.move(y, x-1)
+                log.debug('left from %i, %i' % (y, x))
+                if x > 1:
+                    self.move(y, x-1)
+                else:
+                    self.move(y, x)
             elif c == '<KEY_RIGHT>':
-                (y, x) = self.win.getyx()
-                self.move(y, x+1)
+                if x < len(cmd) + 1:
+                    self.move(y, x+1)
+                else:
+                    self.move(y, x)
+            elif c == '<KEY_RESIZE>':
+                self.screen.send_event(c)
             else:
                 (maxy, maxx) = self.win.getmaxyx()
                 # should be screen size
-                if len(cmd) >= maxx - 2:
-                    continue
-                cmd += c
-                self.set_text(':%s' % cmd)
+                if len(cmd) > maxx - 3:
+                    self.move(y, x)
+                else:
+                    cmd += c
+                    self.set_text('%s%s' % (prompt, cmd))
 

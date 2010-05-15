@@ -24,25 +24,28 @@ class TextBox(BaseWidget):
                 log.debug('padding: %s' % padded_text)
                 (y, x) = self.get_size()
                 padded_text += u' ' * (x - len(self.text) - 1)
+            (maxy, maxx) = self.get_size()
+            if len(padded_text) >= maxx - 1:
+                padded_text = padded_text[:maxx-1]
             self.write(padded_text, self.screen.get_color(self.style))
 
         super(TextBox, self).refresh()
 
     def get_dimensions(self):
         (p_maxy, p_maxx) = self.parent.get_size()
-        (p_posy, p_posx) = self.parent.get_pos()
+        (p_begy, p_begx) = self.parent.get_beg()
 
         if self.relpos >= 0:
-            posy = p_posy + self.relpos
+            begy = p_begy + self.relpos
         else:
-            posy = p_posy + p_maxy + self.relpos
+            begy = p_begy + p_maxy + self.relpos
 
-        posx = p_posx
+        begx = p_begx
 
         maxy = 1
         maxx = p_maxx
 
-        return (maxy, maxx, posy, posx)
+        return (maxy, maxx, begy, begx)
 
     def set_text(self, text):
         self.text = text
