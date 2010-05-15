@@ -10,11 +10,7 @@ locale.setlocale(locale.LC_ALL, '')
 
 class Screen(BaseWidget):
     def __init__(self, win):
-        self.win = win
-        self.parent = None
-        self.screen = self
-        self.childs = []
-        self.events = {}
+        super(Screen, self).__init__(None, win)
         self.encoding = locale.getpreferredencoding()
 
         # TODO: make it generic
