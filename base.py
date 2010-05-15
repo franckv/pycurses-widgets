@@ -10,17 +10,24 @@ from ui.ncurses import chars
 locale.setlocale(locale.LC_ALL, '')
 
 class BaseWidget(object):
-    def __init__(self, parent):
+    def __init__(self, parent, win = None):
         log.debug('%s.init' % self.__class__.__name__)
 
         self.parent = parent
-        self.screen = parent.screen
-        self.parent.add_child(self)
+        if parent is None:
+            self.screen = self
+        else:
+            self.screen = parent.screen
+            self.parent.add_child(self)
+
+        if win:
+            self.win = win
+        else:
+            self.win = curses.newwin(*self.get_dimensions())
+            #self.win = self.screen.win.subwin(*self.get_dimensions())
+            self.win.keypad(1)
+ 
         self.childs = []
-        (maxy, maxx, posy, posx) = self.get_dimensions()
-        self.win = curses.newwin(maxy, maxx, posy, posx)
-        #self.win = self.screen.win.subwin(maxy, maxx, posy, posx)
-        self.win.keypad(1)
         self.updated = True
         self.events = {}
 
