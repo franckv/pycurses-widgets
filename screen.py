@@ -4,7 +4,7 @@ import locale
 
 import log
 import config
-from base import BaseWidget
+from ui.ncurses.widget.base import BaseWidget
 
 locale.setlocale(locale.LC_ALL, '')
 

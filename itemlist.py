@@ -1,8 +1,8 @@
 import curses
 
 import log
-from base import BaseWidget
-from textpanel import TextPanel
+from ui.ncurses.widget.base import BaseWidget
+from ui.ncurses.widget.textpanel import TextPanel
 
 class ItemList(TextPanel):
     def __init__(self, parent):
@@ -68,7 +68,7 @@ class ItemList(TextPanel):
                     self.move(count, 0)
 
                 if self.selected == count + start:
-                    padded = line + u' ' * (x - len(line) - 1)
+                    padded = line + ' ' * (x - len(line) - 1)
                     self.write(padded, self.screen.get_color('highlight'))
                 else:
                     self.write(line)

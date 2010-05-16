@@ -1,7 +1,7 @@
 import curses
 
 import log
-from textbox import TextBox
+from ui.ncurses.widget.textbox import TextBox
 
 class CommandBar(TextBox):
     def __init__(self, parent):

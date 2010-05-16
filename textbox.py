@@ -2,7 +2,7 @@ import locale
 import curses
 
 import log
-from base import BaseWidget
+from ui.ncurses.widget.base import BaseWidget
 
 locale.setlocale(locale.LC_ALL, '')
 
@@ -22,7 +22,7 @@ class TextBox(BaseWidget):
             if self.fill:
                 log.debug('padding: %s' % padded_text)
                 (y, x) = self.get_size()
-                padded_text += u' ' * (x - len(self.text) - 1)
+                padded_text += ' ' * (x - len(self.text) - 1)
             (maxy, maxx) = self.get_size()
             if len(padded_text) >= maxx - 1:
                 padded_text = padded_text[:maxx-1]
