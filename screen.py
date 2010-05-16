@@ -20,7 +20,7 @@ class Screen(BaseWidget):
 
     def set_colors(self):
         curses.use_default_colors()
-        for color in config.colors.itervalues():
+        for color in config.colors.values():
             if color[0] == 0: continue
             curses.init_pair(
                 color[0],
