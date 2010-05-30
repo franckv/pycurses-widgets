@@ -1,1 +1,12 @@
 Python widgets library for ncurses
+
+The following widgets are available:
+* Screen: a widget representing the whole screen
+* TextBox: a generic textbox
+* TitleBar: a title bar
+* CommandBar: a vi-like command bar that can receive user inputs
+* StatusBar: a status bar
+* Panel: a generic panel
+* TextPanel: a panel displaying some text
+* ItemList: an item selection panel
+* TabPanel: a panel containing sub-tabs
