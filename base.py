@@ -5,7 +5,7 @@ import locale
 
 import common
 import log
-from ui.ncurses import chars
+import chars
 
 locale.setlocale(locale.LC_ALL, '')
 
