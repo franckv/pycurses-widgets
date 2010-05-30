@@ -5,7 +5,7 @@ from ui.ncurses.widget.textbox import TextBox
 
 class CommandBar(TextBox):
     def __init__(self, parent):
-        super(CommandBar, self).__init__(parent, -1)
+        super(CommandBar, self).__init__(parent)
         self.style = 'command'
 
     def read(self, prompt, validator = None):

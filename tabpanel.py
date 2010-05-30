@@ -1,4 +1,5 @@
 import log
+from ui.ncurses.widget import base
 from ui.ncurses.widget.panel import Panel
 
 class TabPanel(Panel):
@@ -6,6 +7,7 @@ class TabPanel(Panel):
         super(TabPanel, self).__init__(parent)
 
         self.tabs = {}
+        self.layout = base.LAYOUT_OVERLAP
         self.current = None
 
     def create_tab(self, cls, name):

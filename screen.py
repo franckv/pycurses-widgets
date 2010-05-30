@@ -4,13 +4,13 @@ import locale
 
 import log
 import config
-from ui.ncurses.widget.base import BaseWidget
+from ui.ncurses.widget.base import *
 
 locale.setlocale(locale.LC_ALL, '')
 
 class Screen(BaseWidget):
     def __init__(self, win):
-        super(Screen, self).__init__(None, win)
+        super(Screen, self).__init__(None, SIZE_EXTEND, SIZE_EXTEND, win)
         self.encoding = locale.getpreferredencoding()
 
         # TODO: make it generic

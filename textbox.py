@@ -2,17 +2,16 @@ import locale
 import curses
 
 import log
-from ui.ncurses.widget.base import BaseWidget
+from ui.ncurses.widget.base import *
 
 locale.setlocale(locale.LC_ALL, '')
 
 class TextBox(BaseWidget):
-    def __init__(self, parent, relpos):
-        self.relpos = relpos
+    def __init__(self, parent):
         self.style = 'default'
         self.fill = False
         self.text = ''
-        super(TextBox, self).__init__(parent)
+        super(TextBox, self).__init__(parent, SIZE_EXTEND, 1)
 
     def refresh(self):
         log.debug('%s.refresh' % self.__class__.__name__)
@@ -29,22 +28,6 @@ class TextBox(BaseWidget):
             self.write(padded_text, self.screen.get_color(self.style))
 
         super(TextBox, self).refresh()
-
-    def get_dimensions(self):
-        (p_maxy, p_maxx) = self.parent.get_size()
-        (p_begy, p_begx) = self.parent.get_beg()
-
-        if self.relpos >= 0:
-            begy = p_begy + self.relpos
-        else:
-            begy = p_begy + p_maxy + self.relpos
-
-        begx = p_begx
-
-        maxy = 1
-        maxx = p_maxx
-
-        return (maxy, maxx, begy, begx)
 
     def set_text(self, text):
         self.text = text

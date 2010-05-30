@@ -9,9 +9,15 @@ from ui.ncurses import chars
 
 locale.setlocale(locale.LC_ALL, '')
 
+LAYOUT_VERTICAL, LAYOUT_HORIZONTAL, LAYOUT_OVERLAP = range(3)
+SIZE_EXTEND, SIZE_SHRINK = (-1, -2)
+
 class BaseWidget(object):
-    def __init__(self, parent, win = None):
+    def __init__(self, parent, width, height, win = None):
         log.debug('%s.init' % self.__class__.__name__)
+
+        self.width = width
+        self.height = height
 
         self.parent = parent
         if parent is None:
@@ -23,13 +29,92 @@ class BaseWidget(object):
         if win:
             self.win = win
         else:
-            self.win = curses.newwin(*self.get_dimensions())
+            self.win = curses.newwin(0, 0, 0, 0)
+            #self.win = curses.newwin(*self.get_dimensions())
             #self.win = self.screen.win.subwin(*self.get_dimensions())
             self.win.keypad(1)
  
+        self.layout = LAYOUT_VERTICAL
         self.childs = []
         self.updated = True
         self.events = {}
+
+    def get_child_dimensions(self, child):
+        log.debug('%s.get_child_dimensions' % self.__class__.__name__)
+        maxy, maxx = self.get_size()
+        begy, begx = self.get_beg()
+        log.debug('maxy: %i, maxx: %i, begy: %i, begx: %i' % (maxy, maxx, begy, begx))
+
+        if self.layout == LAYOUT_OVERLAP:
+            dimensions = (maxy, maxx, begy, begx)
+        elif self.layout == LAYOUT_VERTICAL or self.layout == LAYOUT_HORIZONTAL:
+            fixed = 0   # total size of fixed sized items
+            n = 0       # number of dynamic sized items
+            for c in self.childs:
+                if self.layout == LAYOUT_VERTICAL:
+                    dim = c.height
+                else:
+                    dim = c.width
+                if dim == SIZE_EXTEND:
+                    n += 1
+                else:
+                    fixed += dim
+
+            # the space not taken by fixed sized items is divided among the others
+            if n > 0:
+                if self.layout == LAYOUT_VERTICAL:
+                    q, r = ((maxy-fixed)/n, (maxy-fixed)%n)
+                else:
+                    q, r = ((maxx-fixed)/n, (maxx-fixed)%n)
+            else:
+                q, r = (0, 0)
+
+            log.debug('Fixed: %i, n: %i, q: %i, r: %i' % (fixed, n, q, r))
+            if self.layout == LAYOUT_VERTICAL:
+                start = begy
+            else:
+                start = begx
+            for c in self.childs:
+                if self.layout == LAYOUT_VERTICAL:
+                    dim = c.height
+                else:
+                    dim = c.width
+
+                if dim == SIZE_EXTEND:
+                    dim = q
+                    if r > 0:
+                        dim += 1
+                        r -= 1
+
+                if c == child:
+                    if self.layout == LAYOUT_VERTICAL:
+                        width = c.width
+                        if width == SIZE_EXTEND:
+                            width = maxx
+                        dimensions = (dim, width, start, begx)
+                        break
+                    else:
+                        height = c.height
+                        if height == SIZE_EXTEND:
+                            height = maxy
+                        dimensions = (height, dim, start, begx)
+                        break
+
+                start += dim
+
+        log.debug('maxy: %i, maxx: %i, begy: %i, begx: %i' % dimensions)
+        return dimensions
+
+    def get_dimensions(self):
+        log.debug('%s.get_dimensions' % self.__class__.__name__)
+        if self.parent is None:
+            maxy, maxx = self.get_size()
+            begy, begx = self.get_beg()
+            dimensions = (maxy, maxx, begy, begx)
+        else:
+            dimensions = self.parent.get_child_dimensions(self)
+
+        return dimensions
 
     def redraw(self):
         log.debug('%s.redraw' % self.__class__.__name__)
