@@ -1,6 +1,6 @@
 import curses
+import logging
 
-import log
 from ui.ncurses.widget.panel import Panel
 
 class TextPanel(Panel):

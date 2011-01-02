@@ -1,4 +1,5 @@
-import log
+import logging
+
 from ui.ncurses.widget import base
 from ui.ncurses.widget.panel import Panel
 
@@ -47,10 +48,10 @@ class TabPanel(Panel):
 
         idx = self.childs.index(self.current)
         if idx + 1 < len(self.childs):
-            log.debug('Current tab is %i' % (idx + 1))
+            logging.debug('Current tab is %i' % (idx + 1))
             next_tab = self.childs[idx + 1]
         else:
-            log.debug('Current tab is %i' % 0)
+            logging.debug('Current tab is %i' % 0)
             next_tab = self.childs[0]
             
         self.current = next_tab
@@ -62,10 +63,10 @@ class TabPanel(Panel):
 
         idx = self.childs.index(self.current)
         if idx > 0:
-            log.debug('Current tab is %i' % (idx - 1))
+            logging.debug('Current tab is %i' % (idx - 1))
             prev_tab = self.childs[idx - 1]
         else:
-            log.debug('Current tab is %i' % len(self.childs))
+            logging.debug('Current tab is %i' % len(self.childs))
             prev_tab = self.childs[-1]
             
         self.current = prev_tab
@@ -76,7 +77,7 @@ class TabPanel(Panel):
             self.current.send_event(event)
 
     def refresh(self):
-        log.debug('%s.refresh' % self.__class__.__name__)
+        logging.debug('%s.refresh' % self.__class__.__name__)
         if self.current:
             self.current.refresh()
 

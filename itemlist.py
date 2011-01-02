@@ -1,6 +1,6 @@
 import curses
+import logging
 
-import log
 from ui.ncurses.widget.base import BaseWidget
 from ui.ncurses.widget.textpanel import TextPanel
 
@@ -15,7 +15,7 @@ class ItemList(TextPanel):
         self.register_event('<KEY_SPACE>', self.item_selected)
 
     def move_up(self):
-        log.debug('moving up')
+        logging.debug('moving up')
         if len(self.lines) == 0:
             return
         elif self.selected is None:
@@ -25,10 +25,10 @@ class ItemList(TextPanel):
             self.selected -= 1
             self.updated = True
 
-        log.debug('selected is %i' % self.selected)
+        logging.debug('selected is %i' % self.selected)
 
     def move_down(self):
-        log.debug('moving down')
+        logging.debug('moving down')
         if len(self.lines) == 0:
             return
         elif self.selected is None:
@@ -38,14 +38,14 @@ class ItemList(TextPanel):
             self.selected += 1
             self.updated = True
 
-        log.debug('selected is %i' % self.selected)
+        logging.debug('selected is %i' % self.selected)
 
     def set_selected(self, cb):
         self.on_selected = cb
 
     def item_selected(self):
         if not self.selected is None:
-            log.debug('enter pressed on item %i' % self.selected)
+            logging.debug('enter pressed on item %i' % self.selected)
             if self.on_selected:
                 self.on_selected(self.selected)
 

@@ -1,8 +1,8 @@
 import sys
 import curses
 import locale
+import logging
 
-import log
 import config
 from ui.ncurses.widget.base import *
 
@@ -38,13 +38,13 @@ class Screen(BaseWidget):
                 config.colors[type][0]) | getattr(curses, 'A_' + config.colors[type][3])
 
     def redraw(self):
-        log.debug('redraw')
+        logging.debug('redraw')
         for child in self.childs: child.redraw()
 
     def refresh(self):
-        log.debug('refresh')
+        logging.debug('refresh')
         for child in self.childs:
-            log.debug('child %s' % child.__class__.__name__)
+            logging.debug('child %s' % child.__class__.__name__)
             child.refresh()
         curses.doupdate()
 

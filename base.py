@@ -2,9 +2,9 @@
 
 import curses
 import locale
+import logging
 
 import common
-import log
 from . import chars
 
 locale.setlocale(locale.LC_ALL, '')
@@ -14,7 +14,7 @@ SIZE_EXTEND, SIZE_SHRINK = (-1, -2)
 
 class BaseWidget(object):
     def __init__(self, parent, width, height, win = None):
-        log.debug('%s.init' % self.__class__.__name__)
+        logging.debug('%s.init' % self.__class__.__name__)
 
         self.width = width
         self.height = height
@@ -40,10 +40,10 @@ class BaseWidget(object):
         self.events = {}
 
     def get_child_dimensions(self, child):
-        log.debug('%s.get_child_dimensions' % self.__class__.__name__)
+        logging.debug('%s.get_child_dimensions' % self.__class__.__name__)
         maxy, maxx = self.get_size()
         begy, begx = self.get_beg()
-        log.debug('maxy: %i, maxx: %i, begy: %i, begx: %i' % (maxy, maxx, begy, begx))
+        logging.debug('maxy: %i, maxx: %i, begy: %i, begx: %i' % (maxy, maxx, begy, begx))
 
         if self.layout == LAYOUT_OVERLAP:
             dimensions = (maxy, maxx, begy, begx)
@@ -69,7 +69,7 @@ class BaseWidget(object):
             else:
                 q, r = (0, 0)
 
-            log.debug('Fixed: %i, n: %i, q: %i, r: %i' % (fixed, n, q, r))
+            logging.debug('Fixed: %i, n: %i, q: %i, r: %i' % (fixed, n, q, r))
             if self.layout == LAYOUT_VERTICAL:
                 start = begy
             else:
@@ -102,11 +102,11 @@ class BaseWidget(object):
 
                 start += dim
 
-        log.debug('maxy: %i, maxx: %i, begy: %i, begx: %i' % dimensions)
+        logging.debug('maxy: %i, maxx: %i, begy: %i, begx: %i' % dimensions)
         return dimensions
 
     def get_dimensions(self):
-        log.debug('%s.get_dimensions' % self.__class__.__name__)
+        logging.debug('%s.get_dimensions' % self.__class__.__name__)
         if self.parent is None:
             maxy, maxx = self.get_size()
             begy, begx = self.get_beg()
@@ -117,25 +117,25 @@ class BaseWidget(object):
         return dimensions
 
     def redraw(self):
-        log.debug('%s.redraw' % self.__class__.__name__)
+        logging.debug('%s.redraw' % self.__class__.__name__)
 
         (maxy, maxx, posy, posx) = self.get_dimensions()
-        log.debug((maxy, maxx, posy, posx))
+        logging.debug((maxy, maxx, posy, posx))
         self.win.resize(maxy, maxx)
         self.win.mvwin(posy, posx)
         for child in self.childs: child.redraw()
         self.updated = True
 
     def refresh(self):
-        log.debug('%s.refresh' % self.__class__.__name__)
+        logging.debug('%s.refresh' % self.__class__.__name__)
         if self.updated:
-            log.debug('updated')
+            logging.debug('updated')
             self.win.noutrefresh()
             self.updated = False
         for child in self.childs: child.refresh()
       
     def destroy(self):
-        log.debug('%sdestroy' % self.__class__.__name__)
+        logging.debug('%sdestroy' % self.__class__.__name__)
         if self.win: del self.win
 
     def register_event(self, event, method):
@@ -158,24 +158,24 @@ class BaseWidget(object):
         return self.win.getmaxyx()
 
     def move(self, y, x):
-        log.debug('%s.move %i, %i' % (self.__class__.__name__, y, x))
+        logging.debug('%s.move %i, %i' % (self.__class__.__name__, y, x))
         self.win.move(y, x)
  
     def write(self, s, attr = None):
-        log.debug('%s.write %s', self.__class__.__name__, s)
+        logging.debug('%s.write %s', self.__class__.__name__, s)
         if attr is None: attr = curses.A_NORMAL
         self.win.addstr(s.encode(self.screen.encoding), attr)
         self.updated = True
 
     def get_char(self):
-        log.debug('%s.get_char' % self.__class__.__name__)
+        logging.debug('%s.get_char' % self.__class__.__name__)
         result = ''
         count = 0
 
         self.screen.refresh()
         while True:
             ch = self.win.getch()
-            log.debug('ch=%i' % ch)
+            logging.debug('ch=%i' % ch)
             if ch == -1:
                 return None
             if ch > 255:
