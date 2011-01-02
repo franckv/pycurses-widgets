@@ -5,11 +5,11 @@ import locale
 
 import common
 import log
-import chars
+from . import chars
 
 locale.setlocale(locale.LC_ALL, '')
 
-LAYOUT_VERTICAL, LAYOUT_HORIZONTAL, LAYOUT_OVERLAP = range(3)
+LAYOUT_VERTICAL, LAYOUT_HORIZONTAL, LAYOUT_OVERLAP = list(range(3))
 SIZE_EXTEND, SIZE_SHRINK = (-1, -2)
 
 class BaseWidget(object):
