@@ -1,7 +1,7 @@
 import curses
 import logging
 
-from ui.ncurses.widget.panel import Panel
+from .panel import Panel
 
 class TextPanel(Panel):
     def __init__(self, parent):

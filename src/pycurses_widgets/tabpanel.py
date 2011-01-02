@@ -1,7 +1,7 @@
 import logging
 
-from ui.ncurses.widget import base
-from ui.ncurses.widget.panel import Panel
+from . import base
+from .panel import Panel
 
 class TabPanel(Panel):
     def __init__(self, parent):

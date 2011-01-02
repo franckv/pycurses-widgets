@@ -1,8 +1,8 @@
 import curses
 import logging
 
-from ui.ncurses.widget.base import BaseWidget
-from ui.ncurses.widget.textpanel import TextPanel
+from .base import BaseWidget
+from .textpanel import TextPanel
 
 class ItemList(TextPanel):
     def __init__(self, parent):

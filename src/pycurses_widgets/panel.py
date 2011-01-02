@@ -1,4 +1,4 @@
-from ui.ncurses.widget.base import *
+from .base import *
 
 class Panel(BaseWidget):
     def __init__(self, parent):

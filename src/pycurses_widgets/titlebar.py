@@ -1,4 +1,4 @@
-from ui.ncurses.widget.textbox import TextBox
+from .textbox import TextBox
 
 class TitleBar(TextBox):
     def __init__(self, parent):

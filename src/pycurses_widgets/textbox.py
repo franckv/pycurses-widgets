@@ -2,7 +2,7 @@ import locale
 import curses
 import logging
 
-from ui.ncurses.widget.base import *
+from .base import *
 
 locale.setlocale(locale.LC_ALL, '')
 

@@ -4,7 +4,6 @@ import curses
 import locale
 import logging
 
-import common
 from . import chars
 
 locale.setlocale(locale.LC_ALL, '')
@@ -63,9 +62,9 @@ class BaseWidget(object):
             # the space not taken by fixed sized items is divided among the others
             if n > 0:
                 if self.layout == LAYOUT_VERTICAL:
-                    q, r = ((maxy-fixed)/n, (maxy-fixed)%n)
+                    q, r = (int((maxy-fixed)/n), (maxy-fixed)%n)
                 else:
-                    q, r = ((maxx-fixed)/n, (maxx-fixed)%n)
+                    q, r = (int((maxx-fixed)/n), (maxx-fixed)%n)
             else:
                 q, r = (0, 0)
 
@@ -114,6 +113,7 @@ class BaseWidget(object):
         else:
             dimensions = self.parent.get_child_dimensions(self)
 
+        logging.debug('maxy: %i, maxx: %i, begy: %i, begx: %i' % dimensions)
         return dimensions
 
     def redraw(self):
@@ -164,12 +164,13 @@ class BaseWidget(object):
     def write(self, s, attr = None):
         logging.debug('%s.write %s', self.__class__.__name__, s)
         if attr is None: attr = curses.A_NORMAL
-        self.win.addstr(s.encode(self.screen.encoding), attr)
+        #self.win.addstr(s.encode(self.screen.encoding), attr)
+        self.win.addstr(s, attr)
         self.updated = True
 
     def get_char(self):
         logging.debug('%s.get_char' % self.__class__.__name__)
-        result = ''
+        result = b""
         count = 0
 
         self.screen.refresh()
@@ -181,18 +182,24 @@ class BaseWidget(object):
             if ch > 255:
                 for attr in dir(curses):
                     if attr.startswith('KEY_') and getattr(curses, attr) == ch:
+                        logging.debug('<%s>' % attr)
                         return '<%s>' % attr
+                logging.debug('<%i>' % ch)
                 return '<%i>' % ch
-            result += chr(ch)
+            result += bytes((ch,))
+            logging.debug(result)
             try:
                 decoded = result.decode(self.screen.encoding)
+                logging.debug('%s: %s (%i)' % (self.screen.encoding, decoded, ord(decoded)))
                 # map control characters
                 if len(decoded) == 1 and ord(decoded) in chars.mappings:
+                    logging.debug('Remap to %s' % chars.mappings[ord(decoded)])
                     return chars.mappings[ord(decoded)]
                 else:
                     return decoded
             except UnicodeDecodeError as e:
                 count += 1
+                logging.debug('Cannot decode')
                 # assumes multibytes characters are less that 4 bytes
                 if count > 4 or e.reason != 'unexpected end of data':
                     return '?'

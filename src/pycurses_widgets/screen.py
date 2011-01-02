@@ -3,8 +3,8 @@ import curses
 import locale
 import logging
 
-import config
-from ui.ncurses.widget.base import *
+from . import colors
+from .base import *
 
 locale.setlocale(locale.LC_ALL, '')
 
@@ -20,7 +20,7 @@ class Screen(BaseWidget):
 
     def set_colors(self):
         curses.use_default_colors()
-        for color in config.colors.values():
+        for color in colors.colors.values():
             if color[0] == 0: continue
             curses.init_pair(
                 color[0],
@@ -28,14 +28,11 @@ class Screen(BaseWidget):
                 getattr(curses, 'COLOR_' + color[2])
             )
 
-    def get_colors(self):
-        return self.colors
-
     def get_color(self, type):
-        if not type in config.colors:
+        if not type in colors.colors:
             type = 'default'
         return curses.color_pair(
-                config.colors[type][0]) | getattr(curses, 'A_' + config.colors[type][3])
+                colors.colors[type][0]) | getattr(curses, 'A_' + colors.colors[type][3])
 
     def redraw(self):
         logging.debug('redraw')
