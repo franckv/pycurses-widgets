@@ -61,7 +61,7 @@ class ItemList(TextPanel):
                 start = len(self.lines) - y
 
             count = 0
-            for line in self.lines[start:]:
+            for (line, style) in self.lines[start:]:
                 if first:
                     first = False
                 else:

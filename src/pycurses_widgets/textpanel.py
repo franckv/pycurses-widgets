@@ -8,8 +8,8 @@ class TextPanel(Panel):
         super(TextPanel, self).__init__(parent)
         self.lines = []
 
-    def add_line(self, line):
-        self.lines.append(line)
+    def add_line(self, line, style='default'):
+        self.lines.append((line, style))
         self.updated = True
 
     def clear_lines(self):
@@ -32,7 +32,7 @@ class TextPanel(Panel):
                 start = len(self.lines) - y
 
             count = 0
-            for line in self.lines[start:]:
+            for (line, style) in self.lines[start:]:
                 if first:
                     first = False
                 else:
