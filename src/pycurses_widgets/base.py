@@ -147,7 +147,7 @@ class BaseWidget(object):
         logging.debug('%s.move %i, %i' % (self.__class__.__name__, y, x))
         self.win.move(y, x)
 
-     def write(self, s, attr = None):
+    def write(self, s, attr = None):
         logging.debug('%s.write %s', self.__class__.__name__, s)
         if attr is None: attr = curses.A_NORMAL
         #self.win.addstr(s.encode(self.screen.encoding), attr)
