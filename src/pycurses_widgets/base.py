@@ -173,6 +173,7 @@ class BaseWidget(object):
         if event in self.events:
             self.events[event]()
             return True
+        logging.debug('Unhandled: %s' % event)
         return False
 
     def add_child(self, child):
