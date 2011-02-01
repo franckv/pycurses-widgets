@@ -172,6 +172,8 @@ class BaseWidget(object):
     def send_event(self, event):
         if event in self.events:
             self.events[event]()
+            return true
+        return false
 
     def add_child(self, child):
         self.childs.append(child)
