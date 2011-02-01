@@ -171,7 +171,7 @@ class BaseWidget(object):
 
     def send_event(self, event):
         if event in self.events:
-            self.events[event]()
+            self.events[event](event)
             return True
         logging.debug('Unhandled: %s' % event)
         return False

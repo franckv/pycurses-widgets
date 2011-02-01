@@ -34,7 +34,7 @@ class Screen(BaseWidget):
         return curses.color_pair(
                 colors.colors[type][0]) | getattr(curses, 'A_' + colors.colors[type][3])
 
-    def redraw(self):
+    def redraw(self, event=None):
         logging.debug('redraw')
         for child in self.childs: child.redraw()
 

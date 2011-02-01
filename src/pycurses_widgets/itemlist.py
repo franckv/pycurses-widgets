@@ -14,7 +14,7 @@ class ItemList(TextPanel):
         self.register_event('<KEY_ENTER>', self.item_selected)
         self.register_event('<KEY_SPACE>', self.item_selected)
 
-    def move_up(self):
+    def move_up(self, event):
         logging.debug('moving up')
         if len(self.lines) == 0:
             return
@@ -27,7 +27,7 @@ class ItemList(TextPanel):
 
         logging.debug('selected is %i' % self.selected)
 
-    def move_down(self):
+    def move_down(self, event):
         logging.debug('moving down')
         if len(self.lines) == 0:
             return
@@ -43,7 +43,7 @@ class ItemList(TextPanel):
     def set_selected(self, cb):
         self.on_selected = cb
 
-    def item_selected(self):
+    def item_selected(self, event):
         if not self.selected is None:
             logging.debug('enter pressed on item %i' % self.selected)
             if self.on_selected:
