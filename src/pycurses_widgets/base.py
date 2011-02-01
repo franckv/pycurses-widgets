@@ -116,6 +116,15 @@ class BaseWidget(object):
         logging.debug('maxy: %i, maxx: %i, begy: %i, begx: %i' % dimensions)
         return dimensions
 
+    def get_pos(self):
+        return self.win.getyx()
+
+    def get_beg(self):
+        return self.win.getbegyx()
+
+    def get_size(self):
+        return self.win.getmaxyx()
+
     def redraw(self):
         logging.debug('%s.redraw' % self.__class__.__name__)
 
@@ -134,6 +143,25 @@ class BaseWidget(object):
             self.updated = False
         for child in self.childs: child.refresh()
       
+    def move(self, y, x):
+        logging.debug('%s.move %i, %i' % (self.__class__.__name__, y, x))
+        self.win.move(y, x)
+
+     def write(self, s, attr = None):
+        logging.debug('%s.write %s', self.__class__.__name__, s)
+        if attr is None: attr = curses.A_NORMAL
+        #self.win.addstr(s.encode(self.screen.encoding), attr)
+        self.win.addstr(s, attr)
+        self.updated = True
+       
+    def fill(self, c):
+        y, x = self.win.getmaxyx()
+        s = c * (x - 1)
+        for l in range(y):
+            self.win.addstr(l, 0, s)
+
+        self.updated = True
+
     def destroy(self):
         logging.debug('%sdestroy' % self.__class__.__name__)
         if self.win: del self.win
@@ -147,27 +175,7 @@ class BaseWidget(object):
 
     def add_child(self, child):
         self.childs.append(child)
-
-    def get_pos(self):
-        return self.win.getyx()
-
-    def get_beg(self):
-        return self.win.getbegyx()
-
-    def get_size(self):
-        return self.win.getmaxyx()
-
-    def move(self, y, x):
-        logging.debug('%s.move %i, %i' % (self.__class__.__name__, y, x))
-        self.win.move(y, x)
  
-    def write(self, s, attr = None):
-        logging.debug('%s.write %s', self.__class__.__name__, s)
-        if attr is None: attr = curses.A_NORMAL
-        #self.win.addstr(s.encode(self.screen.encoding), attr)
-        self.win.addstr(s, attr)
-        self.updated = True
-
     def get_char(self):
         logging.debug('%s.get_char' % self.__class__.__name__)
         result = b""
@@ -203,12 +211,4 @@ class BaseWidget(object):
                 # assumes multibytes characters are less that 4 bytes
                 if count > 4 or e.reason != 'unexpected end of data':
                     return '?'
-
-    def fill(self, c):
-        y, x = self.win.getmaxyx()
-        s = c * (x - 1)
-        for l in range(y):
-            self.win.addstr(l, 0, s)
-
-        self.updated = True
 
