@@ -73,8 +73,7 @@ class TabPanel(Panel):
         self.current.updated = True
 
     def send_event(self, event):
-        if self.current:
-            self.current.send_event(event)
+        return super(TabPanel, self).send_event(event) or (self.current and self.current.send_event(event))
 
     def refresh(self):
         logging.debug('%s.refresh' % self.__class__.__name__)
